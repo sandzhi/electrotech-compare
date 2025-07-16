@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE-edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Обратная связь</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background: #f9f9f9;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    input[type="text"], textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    input[type="submit"] {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background: #45a049;
+    }
+
+    .button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+        display: inline-block;
+    }
+
+    .button:hover {
+        background-color: #45a049;
+    }
+
+    header {
+        background-color: #4CAF50;
+        padding: 20px;
+        color: white;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Обратная связь</h1>
+        <a href="index.html" class="button">Вернуться на главную</a>
+    </header>
+    <form action="#" method="post">
+        <input type="text" name="name" placeholder="Ваше имя">
+        <input type="text" name="email" placeholder="Ваш email">
+        <textarea name="message" placeholder="Введите ваше сообщение"></textarea>
+        <input type="submit" value="Отправить">
+    </form>
+</div>
+<?php
+/* Принимаем данные из формы */
+$name = $_POST["sirname"]; 
+$email = $_POST["email"];
+$text_message = $_POST["message"];
+
+/* Подключаемся к базе данных */
+$link = mysqli_connect("localhost", "root", "");
+mysqli_select_db($link, "praktika");
+
+/* Записывает данные */ 
+$sql = "INSERT INTO praktika(name, email, message) VALUES ('$name', '$email', '$text_message')";
+$result=mysqli_query($link, $sql);
+
+/* Делаем редирект обратно */
+header("Location: ".$_SERVER["HTTP_REFERER"]); 
+exit;
+?>
+</body>
+</html>
