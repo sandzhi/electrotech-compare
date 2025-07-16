@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сравнение приборов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        .nav {
+            margin-top: 10px;
+        }
+        .nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content h2 {
+            color: #4CAF50;
+        }
+        form {
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        form select, form button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        form button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Электротехника - наше всё!</h1>
+        <nav class="nav">
+            <a href="index.html">Главная</a>
+            <a href="catalog.html">Каталог приборов</a>
+            <a href="compare.html">Сравнение приборов</a>
+            <a href="feedback.html">Обратная связь</a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <section>
+            <h2>Выбрать приборы для сравнения</h2>
+            <form id="compareForm">
+                <label for="device1">Прибор 1:</label>
+                <select id="device1" name="device1"></select>
+                <br>
+                <label for="device2">Прибор 2:</label>
+                <select id="device2" name="device2"></select>
+                <br>
+                <button type="submit" class="button">Сравнить приборы</button>
+            </form>
+        </section>
+        
+        <section>
+            <h2>Сравнение характеристик приборов</h2>
+            <table id="comparisonTable">
+                <thead>
+                    <tr>
+                        <th>Характеристика</th>
+                        <th>Прибор 1</th>
+                        <th>Прибор 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Данные будут добавляться -->
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <footer>
+        2025, все права защищены
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('get_devices.php')
+                .then(response => response.json())
+                .then(data => {
+                    const device1Select = document.getElementById('device1');
+                    const device2Select = document.getElementById('device2');
+
+                    data.forEach(device => {
+                        const option1 = document.createElement('option');
+                        const option2 = document.createElement('option');
+                        option1.value = device.id;
+                        option2.value = device.id;
+                        option1.textContent = device.имя;
+                        option2.textContent = device.имя;
+                        device1Select.appendChild(option1);
+                        device2Select.appendChild(option2);
+                    });
+                });
+
+            document.getElementById('compareForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const device1Id = document.getElementById('device1').value;
+                const device2Id = document.getElementById('device2').value;
+
+                fetch('get_devices.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        const device1 = data.find(device => device.id == device1Id);
+                        const device2 = data.find(device => device.id == device2Id);
+
+                        const tableBody = document.getElementById('comparisonTable').getElementsByTagName('tbody')[0];
+                        tableBody.innerHTML = '';
+
+                        const characteristics = ['имя', 'напряжение', 'сила_тока', 'частота', 'цвет', 'размер', 'вес', 'мощность'];
+
+                        characteristics.forEach(characteristic => {
+                            const row = tableBody.insertRow();
+
+                            const cell1 = row.insertCell(0);
+                            const cell2 = row.insertCell(1);
+                            const cell3 = row.insertCell(2);
+
+                            cell1.textContent = characteristic.charAt(0).toUpperCase() + characteristic.slice(1).replace('_', ' ');
+                            cell2.textContent = device1[characteristic];
+                            cell3.textContent = device2[characteristic];
+                        });
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
